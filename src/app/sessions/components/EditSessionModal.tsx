@@ -95,7 +95,8 @@ export default function EditSessionModal({
 
 		setSavingEdit(false);
 		if (error) {
-			onError("خطأ في التعديل");
+			console.error("Error editing session:", error);
+			onError(error.message ? `خطأ في التعديل: ${error.message}` : "خطأ في التعديل");
 		} else {
 			onSuccess("تم تعديل الجلسة بنجاح");
 		}

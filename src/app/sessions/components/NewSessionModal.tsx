@@ -143,7 +143,8 @@ export default function NewSessionModal({
 
 		setSavingSession(false);
 		if (error) {
-			onError("خطأ في إنشاء الجلسة");
+			console.error("Error creating session:", error);
+			onError(error.message ? `خطأ في إنشاء الجلسة: ${error.message}` : "خطأ في إنشاء الجلسة");
 		} else {
 			onSuccess("تم فتح الجلسة بنجاح");
 		}
