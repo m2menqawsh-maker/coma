@@ -12,6 +12,7 @@ import {
 	calcOrdersTotal,
 	calcSessionAmount,
 	formatDuration,
+	formatTime,
 	getCurrentDevice,
 	getInitialDevice,
 } from "../utils";
@@ -75,7 +76,7 @@ export default function SessionCard({
 							🗑️
 						</button>
 					</div>
-					<div className="text-xs text-[#6b6b8a] mt-1 flex items-center gap-1.5">
+					<div className="text-xs text-[#6b6b8a] mt-1 flex items-center gap-1.5 flex-wrap">
 						<span>
 							{currentDev === "mobile"
 								? "📱 موبايل"
@@ -102,6 +103,13 @@ export default function SessionCard({
 							</>
 						)}
 						<span>· {formatDuration(s.start_time, initialDev, changes)}</span>
+						<span>·</span>
+						<span
+							className="text-[#a0a0c0] bg-white/5 px-1.5 py-0.5 rounded text-[11px] font-medium"
+							title="وقت الوصول"
+						>
+							🕒 {formatTime(s.start_time)}
+						</span>
 					</div>
 				</div>
 				<div
@@ -116,6 +124,10 @@ export default function SessionCard({
 			</div>
 
 			<div className="bg-[#0d0d14] rounded-lg py-2.5 px-3 text-xs text-[#6b6b8a] flex flex-col gap-1.5">
+				<div className="flex justify-between">
+					<span>وقت الوصول</span>
+					<span className="text-[#e0e0f0] font-medium">{formatTime(s.start_time)}</span>
+				</div>
 				<div className="flex justify-between">
 					<span>الجلسة</span>
 					<span className="text-[#9090b0]">₪{sAmount.toFixed(2)}</span>

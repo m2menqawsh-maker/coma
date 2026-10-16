@@ -3,9 +3,11 @@ import type { Session, SessionDeviceChange } from "../types";
 import {
 	formatDeviceHistory,
 	formatDuration,
+	formatTime,
 	getCurrentDevice,
 	getDeviceHistorySegments,
 	getInitialDevice,
+	toLocalDatetimeInput,
 } from "../utils";
 
 describe("sessions/utils", () => {
@@ -131,5 +133,29 @@ describe("sessions/utils", () => {
 		expect(formatDeviceHistory(session, changes)).toBe(
 			"موبايل (60د) -> لابتوب (30د)",
 		);
+	});
+
+	it("toLocalDatetimeInput formats ISO date string to local datetime-local format", () => {
+		const iso = "2026-10-16T14:30:00.000Z";
+		const result = toLocalDatetimeInput(iso);
+		const d = new Date(iso);
+		const expectedYear = d.getFullYear();
+		const expectedMonth = String(d.getMonth() + 1).padStart(2, "0");
+		const expectedDay = String(d.getDate()).padStart(2, "0");
+		const expectedHours = String(d.getHours()).padStart(2, "0");
+		const expectedMinutes = String(d.getMinutes()).padStart(2, "0");
+		expect(result).toBe(`${expectedYear}-${expectedMonth}-${expectedDay}T${expectedHours}:${expectedMinutes}`);
+	});
+
+	it("toLocalDatetimeInput handles invalid date strings", () => {
+		expect(toLocalDatetimeInput("invalid-date")).toBe("");
+		expect(toLocalDatetimeInput("")).toBe("");
+	});
+
+	it("formatTime formats valid date string to time", () => {
+		const iso = "2026-10-16T14:30:00.000Z";
+		const result = formatTime(iso);
+		expect(result.length).toBeGreaterThan(0);
+		expect(formatTime("invalid-date")).toBe("");
 	});
 });

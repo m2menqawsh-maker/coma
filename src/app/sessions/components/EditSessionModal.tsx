@@ -3,7 +3,7 @@ import { useRef, useState } from "react";
 import { useOfflineSync } from "@/components/OfflineSyncProvider";
 import { createClient } from "@/lib/supabase/client";
 import type { Customer, Session } from "../types";
-import { btnPrimary, btnSecondary, inputStyle } from "../utils";
+import { btnPrimary, btnSecondary, inputStyle, toLocalDatetimeInput } from "../utils";
 
 const supabase = createClient();
 
@@ -27,7 +27,7 @@ export default function EditSessionModal({
 		useState<Customer | null>(null);
 	const [customerResults, setCustomerResults] = useState<Customer[]>([]);
 	const [editStartTime, setEditStartTime] = useState(
-		new Date(session.start_time).toISOString().slice(0, 16),
+		toLocalDatetimeInput(session.start_time),
 	);
 	const [editNotes, setEditNotes] = useState(session.notes || "");
 	const [savingEdit, setSavingEdit] = useState(false);
@@ -77,6 +77,11 @@ export default function EditSessionModal({
 	};
 
 	const handleEditSessionSave = async () => {
+		if (!editStartTime || isNaN(new Date(editStartTime).getTime())) {
+			onError("يرجى إدخال وقت بداية صحيح");
+			return;
+		}
+
 		setSavingEdit(true);
 
 		const name = editSelectedCustomer?.name || editCustomerSearch.trim();

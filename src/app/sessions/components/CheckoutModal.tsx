@@ -24,6 +24,7 @@ import {
 	applyPackageToSession,
 	fmt,
 	formatDuration,
+	formatTime,
 	getDeviceHistorySegments,
 	getInitialDevice,
 	inputStyle,
@@ -310,8 +311,10 @@ export default function CheckoutModal({
 					إغلاق جلسة — {session.customer_name}
 				</h2>
 				<div className="mb-4">
-					<p className="text-xs text-[#6b6b8a] mb-2 leading-relaxed">
-						إجمالي الوقت: {formatDuration(session.start_time)}
+					<p className="text-xs text-[#6b6b8a] mb-2 leading-relaxed flex items-center gap-1.5">
+						<span>🕒 الوصول: {formatTime(session.start_time)}</span>
+						<span>·</span>
+						<span>إجمالي الوقت: {formatDuration(session.start_time)}</span>
 					</p>
 
 					{(() => {

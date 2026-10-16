@@ -258,3 +258,24 @@ export const fmt = (n: unknown) =>
 		minimumFractionDigits: 2,
 		maximumFractionDigits: 2,
 	}).format(Number(n) || 0);
+
+export function toLocalDatetimeInput(isoString: string): string {
+	const d = new Date(isoString);
+	if (isNaN(d.getTime())) return "";
+	const year = d.getFullYear();
+	const month = String(d.getMonth() + 1).padStart(2, "0");
+	const day = String(d.getDate()).padStart(2, "0");
+	const hours = String(d.getHours()).padStart(2, "0");
+	const minutes = String(d.getMinutes()).padStart(2, "0");
+	return `${year}-${month}-${day}T${hours}:${minutes}`;
+}
+
+export function formatTime(isoString: string): string {
+	const d = new Date(isoString);
+	if (isNaN(d.getTime())) return "";
+	return d.toLocaleTimeString("ar-IL", {
+		hour: "2-digit",
+		minute: "2-digit",
+	});
+}
+

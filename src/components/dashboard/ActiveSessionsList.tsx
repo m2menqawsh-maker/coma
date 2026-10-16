@@ -1,5 +1,6 @@
 import type React from "react";
 import type { PricingConfig, SessionDeviceChange } from "@/app/sessions/types";
+import { formatTime } from "@/app/sessions/utils";
 
 interface ActiveSession {
 	id: string;
@@ -88,9 +89,14 @@ export default function ActiveSessionsList({
 									<div className="text-[13px] font-bold text-white">
 										{sess.customer_name}
 									</div>
-									<div className="text-[11px] text-zinc-400 mt-0.5 font-medium">
-										{sess.device === "mobile" ? "📱" : "💻"} ·{" "}
-										{calcDuration(sess.start_time)}
+									<div className="text-[11px] text-zinc-400 mt-0.5 font-medium flex items-center gap-1.5">
+										<span>{sess.device === "mobile" ? "📱" : "💻"}</span>
+										<span>·</span>
+										<span>{calcDuration(sess.start_time)}</span>
+										<span>·</span>
+										<span className="text-zinc-300 bg-white/5 px-1.5 py-0.5 rounded text-[10px]">
+											🕒 {formatTime(sess.start_time)}
+										</span>
 									</div>
 								</div>
 							</div>
