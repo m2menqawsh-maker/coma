@@ -1,8 +1,10 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import DoubleConfirmModal from "@/components/DoubleConfirmModal";
 import LoadingSpinner from "@/components/LoadingSpinner";
 import SearchFilterBar from "@/components/SearchFilterBar";
+import { evictTableCache } from "@/lib/supabase/cache.utils";
 import { createClient } from "@/lib/supabase/client";
 import { toast } from "react-hot-toast";
 import { fmt } from "../utils";
@@ -24,6 +26,13 @@ export default function CustomersTab() {
 	const [alerts, setAlerts] = useState<{ id: string; type: string; customer_name: string; message: string; details?: string }[]>([]);
 	const [customersSearch, setCustomersSearch] = useState("");
 	const [customersLoading, setCustomersLoading] = useState(false);
+	const [customerToDelete, setCustomerToDelete] = useState<{
+		id: string;
+		name: string;
+		phone: string | null;
+		balance: number;
+	} | null>(null);
+	const [deleting, setDeleting] = useState(false);
 
 	const loadCustomers = async (search = "") => {
 		setCustomersLoading(true);
@@ -146,6 +155,60 @@ export default function CustomersTab() {
 		}
 	};
 
+	const handleDeleteCustomer = async () => {
+		if (!customerToDelete || deleting) return;
+		setDeleting(true);
+		try {
+			const { error } = await supabase
+				.from("customers")
+				.delete()
+				.eq("id", customerToDelete.id);
+
+			if (error) throw error;
+
+			// Invalidate state immediately
+			setCustomers((prev) => prev.filter((c) => c.id !== customerToDelete.id));
+
+			// Invalidate Supabase cache for customers table
+			evictTableCache("customers");
+
+			// Update all_customers_cache in localStorage for offline consistency
+			if (typeof window !== "undefined") {
+				try {
+					const cachedStr = localStorage.getItem("all_customers_cache");
+					if (cachedStr) {
+						const cached = JSON.parse(cachedStr);
+						if (Array.isArray(cached)) {
+							localStorage.setItem(
+								"all_customers_cache",
+								JSON.stringify(cached.filter((c: any) => c.id !== customerToDelete.id)),
+							);
+						}
+					}
+				} catch (e) {
+					console.error("Failed to update all_customers_cache", e);
+				}
+			}
+
+			toast.success(`تم حذف الزبون "${customerToDelete.name}" بنجاح`);
+			setCustomerToDelete(null);
+		} catch (error: any) {
+			toast.error("خطأ أثناء حذف الزبون: " + (error?.message || "حدث خطأ غير متوقع"));
+		} finally {
+			setDeleting(false);
+		}
+	};
+
+	const getDeleteConfirmMessage = (cust: { name: string; balance: number }) => {
+		if (cust.balance < 0) {
+			return `هل أنت متأكد من حذف الزبون "${cust.name}" نهائياً؟\n\n⚠️ تحذير مالي هام: هذا الزبون مسجل عليه دين بقيمة ₪${fmt(Math.abs(cust.balance))}. حذفه سيؤدي إلى شطب سجله نهائياً!`;
+		}
+		if (cust.balance > 0) {
+			return `هل أنت متأكد من حذف الزبون "${cust.name}" نهائياً؟\n\n⚠️ تنبيه: هذا الزبون لديه رصيد دائن بقيمة ₪${fmt(cust.balance)}.`;
+		}
+		return `هل أنت متأكد من حذف الزبون "${cust.name}" نهائياً من قاعدة البيانات؟ لا يمكن التراجع عن هذا الإجراء.`;
+	};
+
 	useEffect(() => {
 		let active = true;
 		const run = async () => {
@@ -201,11 +264,11 @@ export default function CustomersTab() {
 					<table className="w-full border-collapse text-[13px]">
 						<thead>
 							<tr className="border-b border-white/5 bg-white/5">
-								{["الزبون", "إجمالي الإنفاق", "الهاتف", "الرصيد أو الدين", "آخر زيارة", ""].map(
+								{["الزبون", "إجمالي الإنفاق", "الهاتف", "الرصيد أو الدين", "آخر زيارة", "الإجراءات"].map(
 									(h) => (
 										<th
 											key={h}
-											className="py-2.5 px-3.5 text-right text-[#6b6b8a] font-medium"
+											className={`py-2.5 px-3.5 text-[#6b6b8a] font-medium ${h === "الإجراءات" ? "text-left" : "text-right"}`}
 										>
 											{h}
 										</th>
@@ -216,7 +279,7 @@ export default function CustomersTab() {
 						<tbody>
 							{customers.length === 0 ? (
 								<tr>
-									<td colSpan={4} className="p-8 text-center text-[#4a4a6a]">
+									<td colSpan={6} className="p-8 text-center text-[#4a4a6a]">
 										لا يوجد زبائن
 									</td>
 								</tr>
@@ -267,16 +330,26 @@ export default function CustomersTab() {
 												: "\u2014"}
 										</td>
 										<td className="py-3 px-3.5 text-left">
-											<button
-												onClick={() => toggleVIP(c.id, c.is_vip)}
-												className={`text-[11px] px-3 py-1.5 rounded-lg border transition-colors ${
-													c.is_vip 
-														? "bg-amber-500/10 text-amber-400 border-amber-500/20 hover:bg-amber-500/20" 
-														: "bg-white/5 text-[#9090b0] border-white/10 hover:bg-white/10 hover:text-white"
-												}`}
-											>
-												{c.is_vip ? "إلغاء VIP" : "ترقية لـ VIP 👑"}
-											</button>
+											<div className="flex items-center justify-end gap-1.5">
+												<button
+													onClick={() => toggleVIP(c.id, c.is_vip)}
+													className={`text-[11px] px-2.5 py-1.5 rounded-lg border transition-colors ${
+														c.is_vip 
+															? "bg-amber-500/10 text-amber-400 border-amber-500/20 hover:bg-amber-500/20" 
+															: "bg-white/5 text-[#9090b0] border-white/10 hover:bg-white/10 hover:text-white"
+													}`}
+												>
+													{c.is_vip ? "إلغاء VIP" : "ترقية لـ VIP 👑"}
+												</button>
+												<button
+													onClick={() => setCustomerToDelete(c)}
+													className="text-[11px] px-2.5 py-1.5 rounded-lg border border-red-500/20 bg-red-500/10 text-red-400 hover:bg-red-500/20 hover:border-red-500/30 transition-colors flex items-center gap-1 cursor-pointer"
+													title="حذف الزبون"
+												>
+													<span>🗑️</span>
+													<span>حذف</span>
+												</button>
+											</div>
 										</td>
 									</tr>
 								))
@@ -285,6 +358,17 @@ export default function CustomersTab() {
 					</table>
 				</div>
 			)}
+
+			<DoubleConfirmModal
+				isOpen={!!customerToDelete}
+				title="تأكيد حذف الزبون"
+				message={customerToDelete ? getDeleteConfirmMessage(customerToDelete) : ""}
+				confirmWord="حذف"
+				onConfirm={handleDeleteCustomer}
+				onCancel={() => {
+					if (!deleting) setCustomerToDelete(null);
+				}}
+			/>
 		</div>
 	);
 }

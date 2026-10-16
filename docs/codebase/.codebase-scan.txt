@@ -1,0 +1,368 @@
+
+=== DIRECTORY TREE (max depth 3, source files only) ===
+.eslintignore
+.eslintrc.json
+.gitignore
+biome.json
+docs
+docs/codebase
+docs/codebase/.codebase-scan.txt
+e2e
+e2e/cleanup.ts
+e2e/global-setup.ts
+e2e/helpers.ts
+e2e/sessions.spec.ts
+e2e/storageState.json
+e2e/tests
+e2e/tests/1-auth.spec.ts
+e2e/tests/10-tracking-settings.spec.ts
+e2e/tests/11-partners.spec.ts
+e2e/tests/12-subscriptions-packages.spec.ts
+e2e/tests/2-sessions.spec.ts
+e2e/tests/3-invoices.spec.ts
+e2e/tests/4-banks-ledger.spec.ts
+e2e/tests/5-inventory-expenses.spec.ts
+e2e/tests/6-closings-reports.spec.ts
+e2e/tests/7-offline-sync.spec.ts
+e2e/tests/8-users-partners.spec.ts
+e2e/tests/9-obligations.spec.ts
+eslint.config.mjs
+migrations
+migrations/001_add_enum_value.sql
+migrations/001_fix_bank_double_counting.sql
+migrations/002_add_activity_logs.sql
+migrations/003_fix_invoice_update_log.sql
+migrations/004_add_flexible_subscriptions.sql
+migrations/005_add_device_to_subscriptions.sql
+next-env.d.ts
+next.config.ts
+package-lock.json
+package.json
+playwright.config.ts
+postcss.config.mjs
+public
+public/file.svg
+public/globe.svg
+public/icon-192x192.png
+public/icon-512x512.png
+public/next.svg
+public/vercel.svg
+public/window.svg
+schema.sql
+src
+src/app
+src/app/api
+src/app/api/users
+src/app/banks
+src/app/banks/components
+src/app/banks/page.tsx
+src/app/banks/types.ts
+src/app/banks/utils.ts
+src/app/closing
+src/app/closing/components
+src/app/closing/page.tsx
+src/app/closing/types.ts
+src/app/closing/utils.ts
+src/app/expenses
+src/app/expenses/components
+src/app/expenses/page.tsx
+src/app/expenses/types.ts
+src/app/expenses/utils.ts
+src/app/favicon.ico
+src/app/globals.css
+src/app/inventory
+src/app/inventory/actions
+src/app/inventory/components
+src/app/inventory/page.tsx
+src/app/inventory/types.ts
+src/app/inventory/utils.ts
+src/app/invoices
+src/app/invoices/__tests__
+src/app/invoices/components
+src/app/invoices/page.tsx
+src/app/invoices/types.ts
+src/app/invoices/utils.ts
+src/app/layout.tsx
+src/app/ledger
+src/app/ledger/components
+src/app/ledger/page.tsx
+src/app/ledger/types.ts
+src/app/login
+src/app/login/page.tsx
+src/app/manifest.ts
+src/app/obligations
+src/app/obligations/components
+src/app/obligations/page.tsx
+src/app/obligations/types.ts
+src/app/page.tsx
+src/app/partners
+src/app/partners/components
+src/app/partners/page.tsx
+src/app/partners/types.ts
+src/app/partners/utils.ts
+src/app/reports
+src/app/reports/components
+src/app/reports/page.tsx
+src/app/sessions
+src/app/sessions/__tests__
+src/app/sessions/actions
+src/app/sessions/components
+src/app/sessions/page.tsx
+src/app/sessions/types.ts
+src/app/sessions/utils.ts
+src/app/settings
+src/app/settings/components
+src/app/settings/page.tsx
+src/app/settings/types.ts
+src/app/settings/utils.ts
+src/app/subscriptions
+src/app/subscriptions/components
+src/app/subscriptions/page.tsx
+src/app/subscriptions/types.ts
+src/app/subscriptions/utils.ts
+src/app/tracking
+src/app/tracking/page.tsx
+src/app/users
+src/app/users/page.tsx
+src/components
+src/components/AppLayout.tsx
+src/components/BusyHoursChart.tsx
+src/components/DashboardChart.tsx
+src/components/DoubleConfirmModal.tsx
+src/components/LoadingSpinner.tsx
+src/components/OfflineSyncProvider.tsx
+src/components/PrivacyProvider.tsx
+src/components/SearchFilterBar.tsx
+src/components/__tests__
+src/components/__tests__/DoubleConfirmModal.test.tsx
+src/components/__tests__/OfflineSyncProvider.test.tsx
+src/components/dashboard
+src/components/dashboard/ActiveSessionsList.tsx
+src/components/dashboard/BankAccountsList.tsx
+src/components/dashboard/DashboardStatsCards.tsx
+src/components/dashboard/LowStockList.tsx
+src/components/dashboard/TodayCollection.tsx
+src/components/dashboard/TodayInvoicesTable.tsx
+src/components/dashboard/TopDebtorsList.tsx
+src/lib
+src/lib/exportCsv.ts
+src/lib/finance
+src/lib/finance/__tests__
+src/lib/finance/invoices.ts
+src/lib/finance/obligations.ts
+src/lib/finance/sessions.ts
+src/lib/offline
+src/lib/offline/offlineStateManager.ts
+src/lib/offline/useOfflineState.ts
+src/lib/supabase
+src/lib/supabase/__tests__
+src/lib/supabase/cache.utils.ts
+src/lib/supabase/client.ts
+src/lib/supabase/server.ts
+src/proxy.ts
+supabase
+supabase/.temp
+supabase/.temp/gotrue-version
+supabase/.temp/linked-project.json
+supabase/.temp/pooler-url
+supabase/.temp/postgres-version
+supabase/.temp/project-ref
+supabase/.temp/rest-version
+supabase/.temp/storage-migration
+supabase/.temp/storage-version
+tsconfig.json
+vitest.config.ts
+vitest.setup.ts
+
+=== STACK DETECTION (manifest files) ===
+
+--- package-lock.json ---
+{
+	"name": "ledgr",
+	"version": "0.1.0",
+	"lockfileVersion": 3,
+	"requires": true,
+	"packages": {
+		"": {
+			"name": "ledgr",
+			"version": "0.1.0",
+			"dependencies": {
+				"@ducanh2912/next-pwa": "^10.2.9",
+				"@supabase/ssr": "^0.9.0",
+				"@supabase/supabase-js": "^2.99.2",
+				"next": "16.2.0",
+				"react": "19.2.4",
+				"react-dom": "19.2.4",
+				"react-hot-toast": "^2.6.0",
+				"recharts": "^3.8.1"
+			},
+			"devDependencies": {
+				"@playwright/test": "^1.60.0",
+				"@tailwindcss/postcss": "^4",
+				"@testing-library/dom": "^10.4.1",
+				"@testing-library/jest-dom": "^6.9.1",
+				"@testing-library/react": "^16.3.2",
+				"@testing-library/user-event": "^14.6.1",
+				"@types/node": "^20",
+				"@types/react": "^19",
+				"@types/react-dom": "^19",
+				"@vitejs/plugin-react": "^6.0.2",
+				"babel-plugin-react-compiler": "1.0.0",
+				"common-tags": "^1.8.2",
+				"eslint": "^9",
+				"eslint-config-next": "16.2.0",
+				"jsdom": "^29.1.1",
+				"tailwindcss": "^4",
+				"typescript": "^5",
+				"vitest": "^4.1.8"
+			}
+		},
+		"node_modules/@adobe/css-tools": {
+			"version": "4.5.0",
+			"resolved": "https://registry.npmjs.org/@adobe/css-tools/-/css-tools-4.5.0.tgz",
+			"integrity": "sha512-6OzddxPio9UiWTCemp4N8cYLV2ZN1ncRnV1cVGtve7dhPOtRkleRyx32GQCYSwDYgaHU3USMm84tNsvKzRCa1Q==",
+			"dev": true,
+			"license": "MIT"
+		},
+		"node_modules/@alloc/quick-lru": {
+			"version": "5.2.0",
+			"resolved": "https://registry.npmjs.org/@alloc/quick-lru/-/quick-lru-5.2.0.tgz",
+			"integrity": "sha512-UrcABB+4bUrFABwbluTIBErXwvbsU/V7TZWfmbgJfbkwiBuziS9gxdODUyuiecfdGQ85jglMW6juS3+z5TsKLw==",
+			"dev": true,
+			"license": "MIT",
+			"engines": {
+				"node": ">=10"
+			},
+			"funding": {
+				"url": "https://github.com/sponsors/sindresorhus"
+			}
+		},
+		"node_modules/@asamuzakjp/css-color": {
+			"version": "5.1.11",
+			"resolved": "https://registry.npmjs.org/@asamuzakjp/css-color/-/css-color-5.1.11.tgz",
+			"integrity": "sha512-KVw6qIiCTUQhByfTd78h2yD1/00waTmm9uy/R7Ck/ctUyAPj+AEDLkQIdJW0T8+qGgj3j5bpNKK7Q3G+LedJWg==",
+			"dev": true,
+			"license": "MIT",
+			"dependencies": {
+				"@asamuzakjp/generational-cache": "^1.0.1",
+				"@csstools/css-calc": "^3.2.0",
+				"@csstools/css-color-parser": "^4.1.0",
+				"@csstools/css-parser-algorithms": "^4.0.0",
+				"@csstools/css-tokenizer": "^4.0.0"
+			},
+			"engines": {
+				"node": "^20.19.0 || ^22.12.0 || >=24.0.0"
+			}
+		},
+		"node_modules/@asamuzakjp/dom-selector": {
+			"version": "7.1.1",
+			"resolved": "https://registry.npmjs.org/@asamuzakjp/dom-selector/-/dom-selector-7.1.1.tgz",
+
+[TRUNCATED] Showing first 80 of 11794 lines.
+--- package.json ---
+{
+	"name": "ledgr",
+	"version": "0.1.0",
+	"private": true,
+	"scripts": {
+		"dev": "next dev -H 0.0.0.0",
+		"build": "next build --webpack",
+		"start": "next start -H 0.0.0.0",
+		"lint": "eslint",
+		"test": "vitest run",
+		"test:watch": "vitest",
+		"test:coverage": "vitest run --coverage",
+		"test:e2e": "playwright test",
+		"test:e2e:ui": "playwright test --ui"
+	},
+	"dependencies": {
+		"@ducanh2912/next-pwa": "^10.2.9",
+		"@supabase/ssr": "^0.9.0",
+		"@supabase/supabase-js": "^2.99.2",
+		"next": "16.2.0",
+		"react": "19.2.4",
+		"react-dom": "19.2.4",
+		"react-hot-toast": "^2.6.0",
+		"recharts": "^3.8.1"
+	},
+	"devDependencies": {
+		"@playwright/test": "^1.60.0",
+		"@tailwindcss/postcss": "^4",
+		"@testing-library/dom": "^10.4.1",
+		"@testing-library/jest-dom": "^6.9.1",
+		"@testing-library/react": "^16.3.2",
+		"@testing-library/user-event": "^14.6.1",
+		"@types/node": "^20",
+		"@types/react": "^19",
+		"@types/react-dom": "^19",
+		"@vitejs/plugin-react": "^6.0.2",
+		"babel-plugin-react-compiler": "1.0.0",
+		"common-tags": "^1.8.2",
+		"eslint": "^9",
+		"eslint-config-next": "16.2.0",
+		"jsdom": "^29.1.1",
+		"tailwindcss": "^4",
+		"typescript": "^5",
+		"vitest": "^4.1.8"
+	}
+}
+
+
+=== ENTRY POINTS ===
+No common entry points found. Check 'main' or 'scripts.start' in manifest files above.
+
+=== LINTING AND FORMATTING CONFIG ===
+Found: .eslintrc.json
+Found: eslint.config.mjs
+Found: tsconfig.json
+Found: biome.json
+
+=== ENVIRONMENT VARIABLE TEMPLATES ===
+No .env.example or .env.template found. Identify required environment variables by searching the code and config for environment variable reads.
+
+=== TODO / FIXME / HACK (production code only, test dirs excluded) ===
+None found.
+
+=== GIT RECENT COMMITS (last 20) ===
+54225c5 Remove ResetButton completely
+
+=== HIGH-CHURN FILES (last 90 days, top 20) ===
+None found.
+
+=== MONOREPO SIGNALS ===
+No monorepo signals detected.
+
+=== CODE METRICS ===
+Total files scanned: 186
+Total lines of code: 35878
+
+Files by language:
+  TypeScript/React: 99
+  TypeScript: 61
+  Other: 26
+
+Top 10 largest files:
+public/icon-192x192.png: 655.6KB
+public/icon-512x512.png: 655.6KB
+package-lock.json: 383.5KB
+schema.sql: 308.2KB
+src/app/favicon.ico: 25.3KB
+src/app/sessions/components/CheckoutModal.tsx: 22.8KB
+src/app/subscriptions/components/CreateSubscriptionModal.tsx: 15.9KB
+src/app/sessions/page.tsx: 13.9KB
+src/app/sessions/actions/checkout.ts: 13.6KB
+src/app/invoices/components/InvoiceDetailsModal.tsx: 13.2KB
+
+=== CI/CD PIPELINES ===
+No CI/CD pipelines detected.
+
+=== CONTAINERS & ORCHESTRATION ===
+No containerization configs detected.
+
+=== SECURITY & COMPLIANCE ===
+No security configs detected.
+
+=== PERFORMANCE & TESTING ===
+No performance testing configs detected.
+
+=== SCAN COMPLETE ===
