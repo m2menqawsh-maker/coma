@@ -164,7 +164,7 @@ export default function ReportsPage() {
 			await loadData();
 		};
 		run();
-	}, []);
+	}, [loadData]);
 
 	// ── Computed ──────────────────────────────────────────────────────────
 	const totalRevenue = invoices.reduce((s, i) => s + i.total_due, 0);

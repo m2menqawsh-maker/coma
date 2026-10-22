@@ -112,7 +112,7 @@ export default function ExpensesManager() {
 			await loadData();
 		};
 		run();
-	}, []);
+	}, [loadData]);
 
 	const handleAddClick = () => {
 		const cash = Math.max(0, parseFloat(form.cash_amount) || 0);

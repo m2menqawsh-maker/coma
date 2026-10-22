@@ -175,7 +175,7 @@ export default function LedgerPage() {
 			await loadData();
 		};
 		run();
-	}, []);
+	}, [loadData]);
 
 	const formatAmount = (n: number) =>
 		new Intl.NumberFormat("en-US", {

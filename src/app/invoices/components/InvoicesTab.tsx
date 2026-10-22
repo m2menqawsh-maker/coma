@@ -46,6 +46,15 @@ export default function InvoicesTab() {
 	const [filterDateFrom, setFilterDateFrom] = useState("");
 	const [filterDateTo, setFilterDateTo] = useState("");
 	const [filterSearch, setFilterSearch] = useState("");
+	const [debouncedSearch, setDebouncedSearch] = useState(filterSearch);
+
+	// Debounce search input to avoid spamming database queries on every keystroke
+	useEffect(() => {
+		const timer = setTimeout(() => {
+			setDebouncedSearch(filterSearch);
+		}, 300);
+		return () => clearTimeout(timer);
+	}, [filterSearch]);
 
 	// Debt payment
 	const [showPayDebt, setShowPayDebt] = useState(false);
@@ -63,6 +72,34 @@ export default function InvoicesTab() {
 		null,
 	);
 
+	// Load user role and active bank accounts once on mount
+	useEffect(() => {
+		const initMeta = async () => {
+			const [{ data: banks, error: e2 }, { data: userResp }] =
+				await Promise.all([
+					supabase
+						.from("bank_accounts")
+						.select("id, name")
+						.eq("is_active", true)
+						.order("name"),
+					supabase.auth.getUser(),
+				]);
+
+			if (e2) toast.error(`خطأ في تحميل الحسابات البنكية: ${e2.message}`);
+			if (banks) setBankAccounts(banks);
+
+			if (userResp?.user) {
+				const { data } = await supabase
+					.from("user_profiles")
+					.select("role")
+					.eq("id", userResp.user.id)
+					.single();
+				if (data) setRole(data.role as "admin" | "partner" | "viewer");
+			}
+		};
+		initMeta();
+	}, []);
+
 	const loadData = useCallback(async () => {
 		let query = supabase
 			.from("invoices")
@@ -74,47 +111,24 @@ export default function InvoicesTab() {
 		if (filterDateFrom) query = query.gte("session_end", filterDateFrom);
 		if (filterDateTo)
 			query = query.lte("session_end", `${filterDateTo}T23:59:59`);
-		if (filterSearch.trim())
-			query = query.ilike("customer_name", `%${filterSearch.trim()}%`);
+		if (debouncedSearch.trim())
+			query = query.ilike("customer_name", `%${debouncedSearch.trim()}%`);
 
-		const [
-			{ data: invs, error: e1 },
-			{ data: banks, error: e2 },
-			{ data: userResp },
-		] = await Promise.all([
-			query,
-			supabase
-				.from("bank_accounts")
-				.select("id, name")
-				.eq("is_active", true)
-				.order("name"),
-			supabase.auth.getUser(),
-		]);
-
-		if (userResp?.user) {
-			const { data } = await supabase
-				.from("user_profiles")
-				.select("role")
-				.eq("id", userResp.user.id)
-				.single();
-			if (data) setRole(data.role as "admin" | "partner" | "viewer");
-		}
+		const { data: invs, error: e1 } = await query;
 
 		if (e1) {
 			toast.error(`خطأ في تحميل الفواتير: ${e1.message}`);
 			setLoading(false);
 			return;
 		}
-		if (e2) toast.error(`خطأ في تحميل الحسابات البنكية: ${e2.message}`);
 
 		setInvoices((invs as Invoice[]) || []);
-		setBankAccounts(banks || []);
 		setLoading(false);
-	}, [filterStatus, filterDevice, filterDateFrom, filterDateTo, filterSearch]);
+	}, [filterStatus, filterDevice, filterDateFrom, filterDateTo, debouncedSearch]);
 
 	useEffect(() => {
 		loadData();
-	}, []);
+	}, [loadData]);
 
 	const openInvoice = async (inv: Invoice) => {
 		setSelectedInvoice(inv);

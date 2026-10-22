@@ -71,7 +71,7 @@ export default function TrackingPage() {
 			await loadData();
 		};
 		run();
-	}, []);
+	}, [loadData]);
 
 	const formatDetails = (details: Record<string, unknown> | null) => {
 		if (!details) return "-";

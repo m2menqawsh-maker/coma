@@ -84,7 +84,7 @@ export default function BanksManager() {
 			await loadData();
 		};
 		run();
-	}, []);
+	}, [loadData]);
 
 	const handleConfirm = async (t: BankTransfer) => {
 		setConfirmingId(t.id);
