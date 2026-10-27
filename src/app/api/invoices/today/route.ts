@@ -104,15 +104,27 @@ export async function GET(req: Request) {
 
 		// 6. Aggregate Totals Summary
 		const summary = {
-			total_revenue: invoices.reduce((sum, inv) => sum + inv.total_due, 0),
-			total_paid: invoices.reduce(
-				(sum, inv) => sum + inv.cash_paid + inv.bank_paid,
+			total_revenue: invoices.reduce(
+				(sum: number, inv: { total_due: number }) => sum + inv.total_due,
 				0,
 			),
-			total_debt: invoices.reduce((sum, inv) => sum + inv.debt_created, 0),
-			total_sessions: invoices.reduce((sum, inv) => sum + inv.session_amount, 0),
+			total_paid: invoices.reduce(
+				(sum: number, inv: { cash_paid: number; bank_paid: number }) =>
+					sum + inv.cash_paid + inv.bank_paid,
+				0,
+			),
+			total_debt: invoices.reduce(
+				(sum: number, inv: { debt_created: number }) => sum + inv.debt_created,
+				0,
+			),
+			total_sessions: invoices.reduce(
+				(sum: number, inv: { session_amount: number }) =>
+					sum + inv.session_amount,
+				0,
+			),
 			total_products: invoices.reduce(
-				(sum, inv) => sum + inv.products_amount,
+				(sum: number, inv: { products_amount: number }) =>
+					sum + inv.products_amount,
 				0,
 			),
 		};
