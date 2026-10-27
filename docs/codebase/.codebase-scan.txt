@@ -1,5 +1,17 @@
 
 === DIRECTORY TREE (max depth 3, source files only) ===
+.agents
+.agents/skills
+.agents/skills/supabase
+.agents/skills/supabase/CHANGELOG.md
+.agents/skills/supabase/SKILL.md
+.agents/skills/supabase/assets
+.agents/skills/supabase/references
+.agents/skills/supabase-postgres-best-practices
+.agents/skills/supabase-postgres-best-practices/CHANGELOG.md
+.agents/skills/supabase-postgres-best-practices/SKILL.md
+.agents/skills/supabase-postgres-best-practices/references
+.env.local
 .eslintignore
 .eslintrc.json
 .gitignore
@@ -7,6 +19,13 @@ biome.json
 docs
 docs/codebase
 docs/codebase/.codebase-scan.txt
+docs/codebase/ARCHITECTURE.md
+docs/codebase/CONCERNS.md
+docs/codebase/CONVENTIONS.md
+docs/codebase/INTEGRATIONS.md
+docs/codebase/STACK.md
+docs/codebase/STRUCTURE.md
+docs/codebase/TESTING.md
 e2e
 e2e/cleanup.ts
 e2e/global-setup.ts
@@ -49,11 +68,13 @@ public/next.svg
 public/vercel.svg
 public/window.svg
 schema.sql
+skills-lock.json
 src
 src/app
 src/app/api
 src/app/api/users
 src/app/banks
+src/app/banks/__tests__
 src/app/banks/components
 src/app/banks/page.tsx
 src/app/banks/types.ts
@@ -171,6 +192,7 @@ supabase/.temp/rest-version
 supabase/.temp/storage-migration
 supabase/.temp/storage-version
 tsconfig.json
+tsconfig.tsbuildinfo
 vitest.config.ts
 vitest.setup.ts
 
@@ -324,34 +346,57 @@ No .env.example or .env.template found. Identify required environment variables 
 None found.
 
 === GIT RECENT COMMITS (last 20) ===
+5b90c68 fix: restore effect reactivity for filters and search across invoices and banks
+2fc86be fix(sessions): correct local arrival time in edit modal and show arrival time on session cards
+8d852b3 fix(sessions): surface explicit database error message on session creation and edit
+decae3d feat(customers): add customer deletion UI with double confirmation and cache sync
 54225c5 Remove ResetButton completely
 
 === HIGH-CHURN FILES (last 90 days, top 20) ===
-None found.
+   2 src/app/sessions/components/EditSessionModal.tsx
+   1 src/app/banks/__tests__/BanksManager.test.tsx
+   1 src/app/banks/components/BanksManager.tsx
+   1 src/app/expenses/components/ExpensesManager.tsx
+   1 src/app/invoices/__tests__/InvoicesTab.test.tsx
+   1 src/app/invoices/components/InvoicesTab.tsx
+   1 src/app/ledger/page.tsx
+   1 src/app/reports/page.tsx
+   1 src/app/tracking/page.tsx
+   1 src/app/sessions/__tests__/utils.test.ts
+   1 src/app/sessions/components/CheckoutModal.tsx
+   1 src/app/sessions/components/SessionCard.tsx
+   1 src/app/sessions/utils.ts
+   1 src/components/dashboard/ActiveSessionsList.tsx
+   1 src/app/sessions/components/NewSessionModal.tsx
+   1 .agents/skills/supabase-postgres-best-practices/CHANGELOG.md
+   1 .agents/skills/supabase-postgres-best-practices/SKILL.md
+   1 .agents/skills/supabase-postgres-best-practices/references/_contributing.md
+   1 .agents/skills/supabase-postgres-best-practices/references/_sections.md
+   1 .agents/skills/supabase-postgres-best-practices/references/_template.md
 
 === MONOREPO SIGNALS ===
 No monorepo signals detected.
 
 === CODE METRICS ===
-Total files scanned: 186
-Total lines of code: 35878
+Total files scanned: 239
+Total lines of code: 36628
 
 Files by language:
-  TypeScript/React: 99
+  TypeScript/React: 102
+  Other: 76
   TypeScript: 61
-  Other: 26
 
 Top 10 largest files:
 public/icon-192x192.png: 655.6KB
 public/icon-512x512.png: 655.6KB
 package-lock.json: 383.5KB
 schema.sql: 308.2KB
+tsconfig.tsbuildinfo: 242.0KB
 src/app/favicon.ico: 25.3KB
-src/app/sessions/components/CheckoutModal.tsx: 22.8KB
+src/app/sessions/components/CheckoutModal.tsx: 22.9KB
 src/app/subscriptions/components/CreateSubscriptionModal.tsx: 15.9KB
+.agents/skills/supabase/SKILL.md: 14.0KB
 src/app/sessions/page.tsx: 13.9KB
-src/app/sessions/actions/checkout.ts: 13.6KB
-src/app/invoices/components/InvoiceDetailsModal.tsx: 13.2KB
 
 === CI/CD PIPELINES ===
 No CI/CD pipelines detected.
