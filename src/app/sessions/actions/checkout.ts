@@ -85,6 +85,11 @@ export async function processSingleCheckout(
 		subExtraSessionDate,
 	} = params;
 
+	if (bank > 0 && (!bankAccountId || !bankAccountId.trim())) {
+		throw new Error("يجب اختيار الحساب البنكي عند وجود دفعة عبر التطبيق / البنك");
+	}
+	const finalBankAccountId = bank > 0 ? bankAccountId : null;
+
 	const overpaid = overpaidRaw - debtClearedByOverpay;
 	const durationHours =
 		(Date.now() - new Date(session.start_time).getTime()) / 3600000;
@@ -123,7 +128,7 @@ export async function processSingleCheckout(
 			net_profit: netProfit,
 			cash_paid: cash,
 			bank_paid: bank,
-			bank_account_id: bankAccountId,
+			bank_account_id: finalBankAccountId,
 			credit_applied: creditApplied,
 			debt_created: debtCreated,
 			status: debtCreated > 0 ? "debt" : "paid",
@@ -233,7 +238,7 @@ export async function processSingleCheckout(
 				invoice_id: invoice.id,
 				amount: Math.abs(netChange),
 				channel: bank > 0 ? "bank" : "cash",
-				bank_account_id: bank > 0 ? bankAccountId : null,
+				bank_account_id: finalBankAccountId,
 				date: new Date().toISOString().split("T")[0],
 				note:
 					netChange < 0
@@ -248,7 +253,7 @@ export async function processSingleCheckout(
 			.from("bank_transfers")
 			.insert({
 				date: new Date().toISOString().split("T")[0],
-				bank_account_id: bankAccountId,
+				bank_account_id: finalBankAccountId,
 				amount: bank,
 				direction: "in",
 				status: "pending",
@@ -329,6 +334,11 @@ export async function processGroupCheckout(
 		totalPaid,
 	} = params;
 
+	if (bank > 0 && (!bankAccountId || !bankAccountId.trim())) {
+		throw new Error("يجب اختيار الحساب البنكي عند وجود دفعة عبر التطبيق / البنك");
+	}
+	const finalBankAccountId = bank > 0 ? bankAccountId : null;
+
 	const primarySession = selectedSessions.find((s) => s.id === groupPrimaryId)!;
 	const today = new Date().toISOString().split("T")[0];
 	const now = new Date().toISOString();
@@ -406,7 +416,7 @@ export async function processGroupCheckout(
 				net_profit: netProfit,
 				cash_paid: isPrimary ? cash : 0,
 				bank_paid: isPrimary ? bank : 0,
-				bank_account_id: isPrimary && bank > 0 ? bankAccountId : null,
+				bank_account_id: isPrimary && bank > 0 ? finalBankAccountId : null,
 				credit_applied: invoiceCredit,
 				debt_created: isPrimary ? debtCreated : 0,
 				status: isPrimary ? (debtCreated > 0 ? "debt" : "paid") : "paid",
@@ -433,7 +443,7 @@ export async function processGroupCheckout(
 		if (isPrimary && bank > 0 && invoice) {
 			await supabase.from("bank_transfers").insert({
 				date: today,
-				bank_account_id: bankAccountId,
+				bank_account_id: finalBankAccountId,
 				amount: bank,
 				direction: "in",
 				status: "pending",
@@ -473,7 +483,7 @@ export async function processGroupCheckout(
 				invoice_id: primaryInvoiceRes.data?.id || null,
 				amount: Math.abs(netChange),
 				channel: bank > 0 ? "bank" : "cash",
-				bank_account_id: bank > 0 ? bankAccountId : null,
+				bank_account_id: finalBankAccountId,
 				date: today,
 				note:
 					netChange < 0

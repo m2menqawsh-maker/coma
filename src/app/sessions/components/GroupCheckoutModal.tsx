@@ -60,6 +60,12 @@ export default function GroupCheckoutModal({
 	const [primaryCustomer, setPrimaryCustomer] = useState<Customer | null>(null);
 
 	useEffect(() => {
+		if (bankAccounts.length === 1 && !groupBankId) {
+			setGroupBankId(bankAccounts[0].id);
+		}
+	}, [bankAccounts, groupBankId]);
+
+	useEffect(() => {
 		const fetchCust = async () => {
 			if (groupPrimaryId) {
 				const primarySession = sessions.find((s) => s.id === groupPrimaryId);
@@ -167,8 +173,23 @@ export default function GroupCheckoutModal({
 		}
 	};
 
+	const validateBankPayment = () => {
+		if (bank > 0) {
+			if (bankAccounts.length === 0) {
+				onError("لا يمكن الدفع البنكي لعدم وجود حسابات بنكية نشطة في النظام.");
+				return false;
+			}
+			if (!groupBankId || !groupBankId.trim()) {
+				onError("يرجى اختيار الحساب البنكي لاستقبال الحوالة.");
+				return false;
+			}
+		}
+		return true;
+	};
+
 	const handleGroupCheckoutClick = () => {
 		if (groupSelected.length < 2 || !groupPrimaryId) return;
+		if (!validateBankPayment()) return;
 		if (totalGrossProfit < 0) {
 			setShowConfirm(true);
 		} else {
@@ -178,6 +199,7 @@ export default function GroupCheckoutModal({
 
 	const handleGroupCheckout = async () => {
 		if (groupSelected.length < 2 || !groupPrimaryId) return;
+		if (!validateBankPayment()) return;
 		setSavingGroup(true);
 
 		const primarySession = selectedSessions.find(
@@ -365,23 +387,40 @@ export default function GroupCheckoutModal({
 									placeholder="0"
 								/>
 							</div>
-							{parseFloat(groupBank) > 0 && bankAccounts.length > 0 && (
+							{parseFloat(groupBank) > 0 && (
 								<div>
-									<label className="text-xs text-[#9090b0] block mb-1.5">
-										الحساب البنكي
-									</label>
-									<select
-										className={inputStyle}
-										value={groupBankId}
-										onChange={(e) => setGroupBankId(e.target.value)}
-									>
-										<option value="">اختر...</option>
-										{bankAccounts.map((b) => (
-											<option key={b.id} value={b.id}>
-												{b.name}
-											</option>
-										))}
-									</select>
+									{bankAccounts.length > 0 ? (
+										<div>
+											<label className="text-xs text-[#9090b0] block mb-1.5">
+												الحساب البنكي <span className="text-red-400 font-bold">*</span>
+											</label>
+											<select
+												className={`${inputStyle} ${
+													!groupBankId
+														? "border-amber-500/60 focus:border-amber-400 ring-1 ring-amber-500/20"
+														: ""
+												}`}
+												value={groupBankId}
+												onChange={(e) => setGroupBankId(e.target.value)}
+											>
+												<option value="">اختر...</option>
+												{bankAccounts.map((b) => (
+													<option key={b.id} value={b.id}>
+														{b.name}
+													</option>
+												))}
+											</select>
+											{!groupBankId && (
+												<p className="text-[11px] text-amber-400 mt-1">
+													⚠️ يجب تحديد الحساب البنكي المستقبل للحوالة
+												</p>
+											)}
+										</div>
+									) : (
+										<div className="bg-red-500/10 border border-red-500/30 rounded-lg p-2.5 text-xs text-red-400">
+											⚠️ لا توجد حسابات بنكية نشطة في النظام لاستقبال الحوالة. يرجى تفعيل حساب بنكي من شاشة البنوك أولاً أو الدفع نقداً.
+										</div>
+									)}
 								</div>
 							)}
 						</div>

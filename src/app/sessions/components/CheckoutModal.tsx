@@ -78,6 +78,12 @@ export default function CheckoutModal({
 		"normal" | "proportional" | "free"
 	>("normal");
 
+	useEffect(() => {
+		if (bankAccounts.length === 1 && !checkoutBankId) {
+			setCheckoutBankId(bankAccounts[0].id);
+		}
+	}, [bankAccounts, checkoutBankId]);
+
 	// Subscription extra hours handling
 	const [subExtraSessionMethod, setSubExtraSessionMethod] = useState<
 		"charge" | "forgive" | "deduct_future"
@@ -223,7 +229,22 @@ export default function CheckoutModal({
 		Math.round(grossProfit * (pricing.dev_percent / 100) * 100) / 100;
 	const netProfit = grossProfit - devCut;
 
+	const validateBankPayment = () => {
+		if (bank > 0) {
+			if (bankAccounts.length === 0) {
+				onError("لا يمكن الدفع البنكي لعدم وجود حسابات بنكية نشطة في النظام.");
+				return false;
+			}
+			if (!checkoutBankId || !checkoutBankId.trim()) {
+				onError("يرجى اختيار الحساب البنكي لاستقبال الحوالة.");
+				return false;
+			}
+		}
+		return true;
+	};
+
 	const handleCheckoutClick = () => {
+		if (!validateBankPayment()) return;
 		if (grossProfit < 0) {
 			setShowConfirm(true);
 		} else {
@@ -232,6 +253,7 @@ export default function CheckoutModal({
 	};
 
 	const handleCheckout = async () => {
+		if (!validateBankPayment()) return;
 		setSavingCheckout(true);
 
 		if (!session.customer_id && (debtCreated > 0 || overpaidRaw > 0)) {
@@ -599,23 +621,40 @@ export default function CheckoutModal({
 							placeholder="0"
 						/>
 					</div>
-					{parseFloat(checkoutBank) > 0 && bankAccounts.length > 0 && (
+					{parseFloat(checkoutBank) > 0 && (
 						<div>
-							<label className="text-xs text-[#9090b0] block mb-1.5">
-								الحساب البنكي
-							</label>
-							<select
-								className={inputStyle}
-								value={checkoutBankId}
-								onChange={(e) => setCheckoutBankId(e.target.value)}
-							>
-								<option value="">اختر حساب...</option>
-								{bankAccounts.map((b) => (
-									<option key={b.id} value={b.id}>
-										{b.name}
-									</option>
-								))}
-							</select>
+							{bankAccounts.length > 0 ? (
+								<div>
+									<label className="text-xs text-[#9090b0] block mb-1.5">
+										الحساب البنكي <span className="text-red-400 font-bold">*</span>
+									</label>
+									<select
+										className={`${inputStyle} ${
+											!checkoutBankId
+												? "border-amber-500/60 focus:border-amber-400 ring-1 ring-amber-500/20"
+												: ""
+										}`}
+										value={checkoutBankId}
+										onChange={(e) => setCheckoutBankId(e.target.value)}
+									>
+										<option value="">اختر حساب...</option>
+										{bankAccounts.map((b) => (
+											<option key={b.id} value={b.id}>
+												{b.name}
+											</option>
+										))}
+									</select>
+									{!checkoutBankId && (
+										<p className="text-[11px] text-amber-400 mt-1">
+											⚠️ يجب تحديد الحساب البنكي المستقبل للحوالة
+										</p>
+									)}
+								</div>
+							) : (
+								<div className="bg-red-500/10 border border-red-500/30 rounded-lg p-2.5 text-xs text-red-400">
+									⚠️ لا توجد حسابات بنكية نشطة في النظام لاستقبال الحوالة. يرجى تفعيل حساب بنكي من شاشة البنوك أولاً أو الدفع نقداً.
+								</div>
+							)}
 						</div>
 					)}
 
