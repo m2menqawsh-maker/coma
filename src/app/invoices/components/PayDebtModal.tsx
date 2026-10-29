@@ -69,6 +69,10 @@ export default function PayDebtModal({
 			.update({
 				cash_paid: invoice.cash_paid + cashAmt,
 				bank_paid: invoice.bank_paid + bankAmt,
+				bank_account_id:
+					bankAmt > 0
+						? invoice.bank_account_id || bankId
+						: invoice.bank_account_id,
 				debt_created: remainingDebt,
 				status: newStatus,
 			})

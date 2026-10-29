@@ -37,6 +37,7 @@ export interface Invoice {
 	notes: string | null;
 	created_at: string;
 	hourly_rate_snapshot: number | null;
+	bank_account_id?: string | null;
 	bank_accounts?: { name: string } | null;
 	package_id?: string | null;
 	final_calculation_snapshot?: any | null;

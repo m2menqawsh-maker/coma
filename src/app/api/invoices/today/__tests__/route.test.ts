@@ -33,6 +33,7 @@ describe("GET /api/invoices/today", () => {
 					status: "paid",
 					session_start: "2026-10-20T08:00:00Z",
 					session_end: "2026-10-20T10:00:00Z",
+					bank_account_id: null,
 					bank_account_name: null,
 					package_name: null,
 					items: [
@@ -51,6 +52,25 @@ describe("GET /api/invoices/today", () => {
 							total_price: 10,
 						},
 					],
+				},
+				{
+					id: "inv-2",
+					customer_name: "أحمد علي",
+					device: "laptop",
+					duration_minutes: 60,
+					session_amount: 20,
+					products_amount: 0,
+					total_due: 20,
+					cash_paid: 0,
+					bank_paid: 20,
+					debt_created: 0,
+					status: "paid",
+					session_start: "2026-10-20T11:00:00Z",
+					session_end: "2026-10-20T12:00:00Z",
+					bank_account_id: "bank-pal-1",
+					bank_account_name: "بنك فلسطين",
+					package_name: null,
+					items: [],
 				},
 			],
 			error: null,
@@ -79,7 +99,7 @@ describe("GET /api/invoices/today", () => {
 		expect(json.error).toBe("Unauthorized: Missing or invalid API key");
 	});
 
-	it("returns 200 and today's invoices when valid x-api-key is provided", async () => {
+	it("returns 200 and today's invoices with bank details when valid x-api-key is provided", async () => {
 		const req = new Request("http://localhost:3000/api/invoices/today", {
 			headers: { "x-api-key": "test-secret-key-123" },
 		});
@@ -88,14 +108,24 @@ describe("GET /api/invoices/today", () => {
 		expect(res.status).toBe(200);
 		const json = await res.json();
 		expect(json.success).toBe(true);
-		expect(json.count).toBe(1);
+		expect(json.count).toBe(2);
 		expect(json.summary).toBeDefined();
-		expect(json.summary.total_revenue).toBe(35);
+		expect(json.summary.total_revenue).toBe(55);
 		expect(json.summary.total_products).toBe(15);
-		expect(json.summary.total_sessions).toBe(20);
-		expect(json.invoices).toHaveLength(1);
+		expect(json.summary.total_sessions).toBe(40);
+		expect(json.summary.total_cash).toBe(35);
+		expect(json.summary.total_bank).toBe(20);
+		expect(json.summary.banks_breakdown["بنك فلسطين"]).toBe(20);
+
+		expect(json.invoices).toHaveLength(2);
 		expect(json.invoices[0].items).toHaveLength(2);
 		expect(json.invoices[0].items[0].product_name).toBe("شاي بالنعناع");
+
+		// Bank details validation
+		expect(json.invoices[1].bank_paid).toBe(20);
+		expect(json.invoices[1].bank_account_id).toBe("bank-pal-1");
+		expect(json.invoices[1].bank_account_name).toBe("بنك فلسطين");
+		expect(json.invoices[1].bank_name).toBe("بنك فلسطين");
 	});
 
 	it("accepts valid key via Authorization Bearer header", async () => {
@@ -107,7 +137,7 @@ describe("GET /api/invoices/today", () => {
 		expect(res.status).toBe(200);
 		const json = await res.json();
 		expect(json.success).toBe(true);
-		expect(json.count).toBe(1);
+		expect(json.count).toBe(2);
 	});
 
 	it("supports custom date query parameter ?date=YYYY-MM-DD", async () => {

@@ -91,7 +91,9 @@ export async function GET(req: Request) {
 			debt_created: Number(inv.debt_created || 0),
 			status: inv.status,
 			notes: inv.notes,
-			bank_account_name: inv.bank_account_name ?? null,
+			bank_account_id: inv.bank_account_id ?? null,
+			bank_account_name: inv.bank_account_name ?? inv.bank_name ?? null,
+			bank_name: inv.bank_account_name ?? inv.bank_name ?? null,
 			package_name: inv.package_name ?? null,
 			items: (inv.items || []).map((item: any) => ({
 				id: item.id,
@@ -103,16 +105,37 @@ export async function GET(req: Request) {
 		}));
 
 		// 6. Aggregate Totals Summary
+		const totalCash = invoices.reduce(
+			(sum: number, inv: { cash_paid: number }) => sum + inv.cash_paid,
+			0,
+		);
+		const totalBank = invoices.reduce(
+			(sum: number, inv: { bank_paid: number }) => sum + inv.bank_paid,
+			0,
+		);
+
+		// Aggregate bank breakdown (amount transferred per bank)
+		const banksBreakdown: Record<string, number> = {};
+		invoices.forEach(
+			(inv: { bank_paid: number; bank_account_name: string | null }) => {
+				if (inv.bank_paid > 0) {
+					const bankLabel = inv.bank_account_name || "غير محدد";
+					banksBreakdown[bankLabel] = Number(
+						((banksBreakdown[bankLabel] || 0) + inv.bank_paid).toFixed(2),
+					);
+				}
+			},
+		);
+
 		const summary = {
 			total_revenue: invoices.reduce(
 				(sum: number, inv: { total_due: number }) => sum + inv.total_due,
 				0,
 			),
-			total_paid: invoices.reduce(
-				(sum: number, inv: { cash_paid: number; bank_paid: number }) =>
-					sum + inv.cash_paid + inv.bank_paid,
-				0,
-			),
+			total_paid: Number((totalCash + totalBank).toFixed(2)),
+			total_cash: Number(totalCash.toFixed(2)),
+			total_bank: Number(totalBank.toFixed(2)),
+			banks_breakdown: banksBreakdown,
 			total_debt: invoices.reduce(
 				(sum: number, inv: { debt_created: number }) => sum + inv.debt_created,
 				0,

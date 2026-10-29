@@ -95,6 +95,10 @@ export default function CrossPaymentModal({
 			.update({
 				cash_paid: targetInvoice.cash_paid + cashAmt,
 				bank_paid: targetInvoice.bank_paid + bankAmt,
+				bank_account_id:
+					bankAmt > 0
+						? targetInvoice.bank_account_id || bankId
+						: targetInvoice.bank_account_id,
 				debt_created: remainingDebt,
 				status: newStatus,
 			})
