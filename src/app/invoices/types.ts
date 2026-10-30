@@ -52,6 +52,8 @@ export interface CustomerMovement {
 	date: string;
 	note: string | null;
 	created_at: string;
+	bank_account_id?: string | null;
+	bank_accounts?: { name: string } | null;
 }
 
 export type ToastType = "success" | "error";

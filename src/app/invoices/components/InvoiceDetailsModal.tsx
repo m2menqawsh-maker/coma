@@ -269,8 +269,15 @@ export default function InvoiceDetailsModal({
 								</span>
 							</div>
 
-							<div className="flex justify-between mb-1">
-								<span className="text-xs text-[#6b6b8a]">بنك</span>
+							<div className="flex justify-between items-center mb-1">
+								<div className="flex items-center gap-1.5">
+									<span className="text-xs text-[#6b6b8a]">بنك</span>
+									{invoice.bank_accounts?.name && (
+										<span className="text-[10px] text-blue-400 bg-blue-400/10 border border-blue-400/20 px-1.5 py-0.5 rounded font-medium">
+											{invoice.bank_accounts.name}
+										</span>
+									)}
+								</div>
 								<span className="text-[13px] font-semibold text-blue-400">
 									₪{fmt(invoice.bank_paid)}
 								</span>
@@ -393,7 +400,9 @@ export default function InvoiceDetailsModal({
 													day: "numeric",
 												})}
 												{" · "}
-												{mv.channel === "bank" ? "بنك" : "نقدي"}
+												{mv.channel === "bank"
+													? `بنك${mv.bank_accounts?.name ? ` (${mv.bank_accounts.name})` : ""}`
+													: "نقدي"}
 											</div>
 										</div>
 

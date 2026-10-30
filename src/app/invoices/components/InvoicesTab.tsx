@@ -143,7 +143,7 @@ export default function InvoicesTab() {
 			inv.customer_id
 				? supabase
 						.from("customer_debt_payments")
-						.select("*")
+						.select("*, bank_accounts(name)")
 						.eq("customer_id", inv.customer_id)
 						.order("created_at", { ascending: false })
 						.limit(10)
@@ -177,7 +177,7 @@ export default function InvoicesTab() {
 			if (payDebtInvoice.customer_id) {
 				const { data: mvs } = await supabase
 					.from("customer_debt_payments")
-					.select("*")
+					.select("*, bank_accounts(name)")
 					.eq("customer_id", payDebtInvoice.customer_id)
 					.order("created_at", { ascending: false })
 					.limit(10);
@@ -205,7 +205,7 @@ export default function InvoicesTab() {
 			if (customerId) {
 				const { data: mvs } = await supabase
 					.from("customer_debt_payments")
-					.select("*")
+					.select("*, bank_accounts(name)")
 					.eq("customer_id", customerId)
 					.order("created_at", { ascending: false })
 					.limit(10);
