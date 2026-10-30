@@ -1,7 +1,7 @@
 "use client";
 
 import type { CustomerMovement, Invoice, InvoiceItem } from "../types";
-import { DEVICE_LABELS, fmt, fmtDateTime, fmtDuration } from "../utils";
+import { DEVICE_LABELS, fmt, fmtDateTime, fmtDuration, fmtTime } from "../utils";
 
 interface InvoiceDetailsModalProps {
 	invoice: Invoice;
@@ -51,6 +51,8 @@ export default function InvoiceDetailsModal({
 						{[
 							{ label: "الزبون", value: invoice.customer_name },
 							{ label: "الجهاز", value: DEVICE_LABELS[invoice.device] },
+							{ label: "وقت الدخول", value: fmtTime(invoice.session_start) },
+							{ label: "وقت الخروج", value: fmtTime(invoice.session_end) },
 							{ label: "المدة", value: fmtDuration(invoice.duration_minutes) },
 							{
 								label: "سعر الساعة",

@@ -34,6 +34,25 @@ export const fmtDateTime = (d: string) =>
 		minute: "2-digit",
 	});
 
+export const fmtDate = (d: string) => {
+	const date = new Date(d);
+	if (isNaN(date.getTime())) return "—";
+	return date.toLocaleDateString("ar-IL", {
+		year: "numeric",
+		month: "short",
+		day: "numeric",
+	});
+};
+
+export const fmtTime = (d: string) => {
+	const date = new Date(d);
+	if (isNaN(date.getTime())) return "—";
+	return date.toLocaleTimeString("ar-IL", {
+		hour: "2-digit",
+		minute: "2-digit",
+	});
+};
+
 export const fmtDuration = (mins: number) => {
 	const h = Math.floor(mins / 60);
 	const m = mins % 60;

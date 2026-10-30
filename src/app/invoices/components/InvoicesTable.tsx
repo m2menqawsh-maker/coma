@@ -1,5 +1,5 @@
 import type { Invoice } from "../types";
-import { DEVICE_LABELS, fmt, fmtDateTime, fmtDuration } from "../utils";
+import { DEVICE_LABELS, fmt, fmtDate, fmtDuration, fmtTime } from "../utils";
 
 interface Props {
 	invoices: Invoice[];
@@ -37,6 +37,8 @@ export default function InvoicesTable({
 							{[
 								"التاريخ",
 								"العميل",
+								"وقت الدخول",
+								"وقت الخروج",
 								"الجهاز",
 								"المدة",
 								"الجلسة",
@@ -76,7 +78,7 @@ export default function InvoicesTable({
 									onClick={() => openInvoice(inv)}
 								>
 									<td className="py-[11px] px-3.5 text-[#9090b0] whitespace-nowrap text-xs">
-										{fmtDateTime(inv.session_end)}
+										{fmtDate(inv.session_end)}
 									</td>
 									<td className="py-[11px] px-3.5 whitespace-nowrap">
 										<div className="text-[13px] font-semibold text-[#e0e0f0]">
@@ -87,6 +89,12 @@ export default function InvoicesTable({
 												✦ رصيد مطبّق ₪{fmt(inv.credit_applied)}
 											</div>
 										)}
+									</td>
+									<td className="py-[11px] px-3.5 text-[#9090b0] whitespace-nowrap text-xs">
+										{fmtTime(inv.session_start)}
+									</td>
+									<td className="py-[11px] px-3.5 text-[#9090b0] whitespace-nowrap text-xs">
+										{fmtTime(inv.session_end)}
 									</td>
 									<td className="py-[11px] px-3.5 text-[#9090b0] text-xs whitespace-nowrap">
 										{DEVICE_LABELS[inv.device]}
@@ -212,7 +220,7 @@ export default function InvoicesTable({
 					<tfoot>
 						<tr className="border-t border-white/10 bg-white/5">
 							<td
-								colSpan={4}
+								colSpan={6}
 								className="py-3 px-3.5 text-[#6b6b8a] text-xs font-semibold"
 							>
 								المجموع ({invoices.length} فاتورة)

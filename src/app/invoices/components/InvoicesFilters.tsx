@@ -1,6 +1,6 @@
 import { exportToCsv } from "@/lib/exportCsv";
 import type { Invoice, InvoiceStatus } from "../types";
-import { btnSecondary, inputStyle } from "../utils";
+import { btnSecondary, fmtDate, fmtTime, inputStyle } from "../utils";
 
 interface Props {
 	filterSearch: string;
@@ -118,8 +118,10 @@ export default function InvoicesFilters({
 						onClick={() => {
 							const dataToExport = invoices.map((i) => ({
 								"رقم الفاتورة": i.id,
-								"تاريخ الجلسة": new Date(i.session_end).toLocaleString("ar-IL"),
+								"تاريخ الجلسة": fmtDate(i.session_end),
 								العميل: i.customer_name,
+								"وقت الدخول": fmtTime(i.session_start),
+								"وقت الخروج": fmtTime(i.session_end),
 								"نوع الجهاز": i.device === "mobile" ? "موبايل" : "لابتوب",
 								"المدة (دقيقة)": Math.round(i.duration_minutes),
 								"إجمالي المستحق": i.total_due,

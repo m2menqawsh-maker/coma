@@ -3,6 +3,8 @@ import {
 	DEVICE_LABELS,
 	fmt,
 	fmtDateTime,
+	fmtDate,
+	fmtTime,
 	fmtDuration,
 	STATUS_COLORS,
 	STATUS_LABELS,
@@ -44,6 +46,20 @@ describe("invoices/utils", () => {
 		// It might be '2023' or '٢٠٢٣', and the time might be '14:30' or '١٤:٣٠'
 		const containsYear = result.includes("2023") || result.includes("٢٠٢٣");
 		expect(containsYear).toBe(true);
+	});
+
+	it("fmtDate formats date strings properly", () => {
+		const dateStr = "2026-10-20T10:00:00Z";
+		const result = fmtDate(dateStr);
+		const containsYear = result.includes("2026") || result.includes("٢٠٢٦");
+		expect(containsYear).toBe(true);
+	});
+
+	it("fmtTime formats time strings properly with hour and minute", () => {
+		const dateStr = "2026-10-20T10:30:00Z";
+		const result = fmtTime(dateStr);
+		expect(result).toBeTruthy();
+		expect(result).not.toBe("—");
 	});
 
 	it("fmtDuration formats minutes to hours and minutes", () => {

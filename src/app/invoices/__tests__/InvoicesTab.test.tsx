@@ -194,4 +194,15 @@ describe("InvoicesTab Search and Filter Integration", () => {
 			expect(screen.getByText("محمد حسن")).toBeInTheDocument();
 		});
 	});
+
+	it("renders entry time and exit time column headers in the table", async () => {
+		render(<InvoicesTab />);
+
+		await waitFor(() => {
+			expect(screen.getByText("أحمد علي")).toBeInTheDocument();
+		});
+
+		expect(screen.getByText("وقت الدخول")).toBeInTheDocument();
+		expect(screen.getByText("وقت الخروج")).toBeInTheDocument();
+	});
 });
